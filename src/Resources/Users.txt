@@ -1,0 +1,3 @@
+Hasan;/resources/KFUPM.png;Jawad,M,;working on ICS108
+Jawad;null;Hasan,M,;working on ICS104
+M;null;Jawad,Hasan,;No current status
