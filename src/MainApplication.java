@@ -19,7 +19,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Map;
 
-public class FaceLite extends Application {
+public class MainApplication extends Application {
 
     // Program variables
     Profile profileShown;
@@ -94,7 +94,7 @@ public class FaceLite extends Application {
     @Override
     public void start(Stage primaryStage) throws FileNotFoundException {
         // Load the users
-        socialNetwork.load(new File("C:\\Users\\muali\\Downloads\\ics108 project\\src\\Resources\\Users.txt"));
+        socialNetwork.load(new File("src/Resources/Users.txt"));
 
         // North pane action handlers
         add.setOnAction(new AddProfile());
@@ -335,7 +335,7 @@ public class FaceLite extends Application {
             }
             else {
                 currentTheme = "White";
-                scene.getStylesheets().remove("/resources/Dark-Theme.css");
+                scene.getStylesheets().remove("/Resources/Dark-Theme.css");
                 scene.getStylesheets().add("/Resources/White-Theme.css");
             }
         }
@@ -346,7 +346,7 @@ public class FaceLite extends Application {
         @Override
         public void handle(WindowEvent event) {
             // handle lookup action
-            try (PrintWriter writer = new PrintWriter("C:\\Users\\muali\\Downloads\\ics108 project\\src\\Resources\\Users.txt")) {
+            try (PrintWriter writer = new PrintWriter("src/Resources/Users.txt")) {
                 ArrayList<Profile> profiles = socialNetwork.getProfiles();
 
                 for (Profile profile: profiles) {
