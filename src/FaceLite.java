@@ -17,11 +17,13 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Map;
 
 public class FaceLite extends Application {
 
     // Program variables
     Profile profileShown;
+    String currentTheme = "White";
     SocialNetwork socialNetwork = new SocialNetwork();
 
     // North pane components
@@ -30,6 +32,7 @@ public class FaceLite extends Application {
     Button add = new Button("Add");
     Button delete = new Button("Delete");
     Button lookup = new Button("Lookup");
+    Button changeTheme = new Button("Change Theme");
 
     // West pane components
     TextField changeStatusField = new TextField();
@@ -46,14 +49,26 @@ public class FaceLite extends Application {
     Label friendsListHeader = new Label("Friends:");
     Label programMassage = new Label();
     Rectangle square = new Rectangle(240, 240, Paint.valueOf("White"));
-    ImageView profilePicture = new ImageView("/resources/KFUPM.png");
+    ImageView profilePicture = new ImageView();
     StackPane stackPane = new StackPane(square, noImageMassage);
     VBox friendsList = new VBox(10, friendsListHeader);
 
+    // Title bar components
+    Label programName = new Label("FaceLite");
+    ImageView closeIcon = new ImageView("/Resources/Icons/Close.png");
+    ImageView minimizeIcon = new ImageView("/Resources/Icons/Minimize.png");
+    ImageView maximizeIcon = new ImageView("/Resources/Icons/Maximize.png");
+    Button close = new Button("", closeIcon);
+    Button minimize = new Button("", minimizeIcon);
+    Button maximize = new Button("", maximizeIcon);
 
-    private void addStyleClassToAll(Node[] nodes, String[] names) {
-        for (int i = 0; i < nodes.length; i++) {
-            nodes[i].getStyleClass().add(names[i]);
+    // Declaring the scene
+    Scene scene;
+
+
+    private void addStyleClassToAll(Map<Node, String> nodeStyles) {
+        for (Map.Entry<Node, String> entry : nodeStyles.entrySet()) {
+            entry.getKey().getStyleClass().add(entry.getValue());
         }
     }
 
@@ -78,12 +93,14 @@ public class FaceLite extends Application {
 
     @Override
     public void start(Stage primaryStage) throws FileNotFoundException {
-        //
+        // Load the users
         socialNetwork.load(new File("C:\\Users\\muali\\Downloads\\ics108 project\\src\\Resources\\Users.txt"));
+
         // North pane action handlers
         add.setOnAction(new AddProfile());
         delete.setOnAction(new DeleteProfile());
         lookup.setOnAction(new LookupProfile());
+        changeTheme.setOnAction(new ChangeTheme());
 
         // West pane action handlers
         changeStatus.setOnAction(new ChangeStatus());
@@ -96,6 +113,26 @@ public class FaceLite extends Application {
         // Spacing regions
         Region space1 = new Region();
         Region space2 = new Region();
+        Region space3 = new Region();
+
+        // Top bar customization
+        space3.setMinWidth(630);
+
+        closeIcon.setFitWidth(25);
+        closeIcon.setFitHeight(25);
+
+        minimizeIcon.setFitWidth(25);
+        minimizeIcon.setFitHeight(25);
+
+        maximizeIcon.setFitWidth(25);
+        maximizeIcon.setFitHeight(25);
+
+        programName.setTranslateX(5);
+
+        // Title bar action handlers
+        close.setOnAction(event -> primaryStage.close());
+        maximize.setOnAction(event -> primaryStage.setMaximized(!primaryStage.isMaximized()));
+        minimize.setOnAction(event -> primaryStage.setIconified(true));
 
         // Profile picture resizing to fit the square
         profilePicture.setFitHeight(315);
@@ -116,28 +153,28 @@ public class FaceLite extends Application {
         friendsList.setTranslateX(350);
         friendsList.setTranslateY(73);
         programMassage.setTranslateX(180);
-        programMassage.setTranslateY(510);
+        programMassage.setTranslateY(460);
 
         // Creating panes for each region
-        HBox northPane = new HBox(20, name, nameField, add, delete, lookup);
+        HBox northPane = new HBox(20, name, nameField, add, delete, lookup, changeTheme);
         VBox westPane = new VBox(10, changeStatusField, changeStatus, space1, changePictureField, changePicture, space2, addFriendField, addFriend);
+        HBox titleBar = new HBox(programName, space3, minimize, maximize, close);
         Pane centerPane = new Pane(username, stackPane, currentStatus, friendsList, programMassage, profilePicture);
 
-        // Adding panes to main border pane
-        BorderPane borderPane = new BorderPane();
-        borderPane.setTop(northPane);
-        borderPane.setLeft(westPane);
-        borderPane.setCenter(centerPane);
+        // Adding panes to main pane
+        BorderPane root = new BorderPane();
+        root.setTop(new VBox(5, titleBar, northPane));
+        root.setLeft(westPane);
+        root.setCenter(centerPane);
 
-        // Creating and styling scene
-        Scene scene = new Scene(borderPane, 800, 600);
+        // Setting and styling scene
+        scene = new Scene(root, 800, 600);
         scene.getStylesheets().add("/resources/styles.css");
-        addStyleClassToAll(new Node[]{name, add, delete, lookup, changeStatus, changePicture, addFriend, space1, space2, username, square, noImageMassage, currentStatus, profilePicture, friendsListHeader, friendsList, programMassage, westPane, northPane, centerPane},
-                new String[]{"name", "add", "delete", "lookup", "change-status", "change-picture", "add-friend", "space", "space", "username", "square", "no-image-massage", "current-status", "profile-picture", "friends-list-header", "friends-list", "program-massage", "west-pane", "north-pane", "center-pane"});
+        addStyleClassToAll(Map.ofEntries(Map.entry(name, "name"), Map.entry(nameField, "name-field"), Map.entry(add, "add"), Map.entry(delete, "delete"), Map.entry(lookup, "lookup"), Map.entry(changeTheme, "change-theme"), Map.entry(changeStatus, "change-status"), Map.entry(changeStatusField, "change-status-field"), Map.entry(changePicture, "change-picture"), Map.entry(changePictureField, "change-picture-field"), Map.entry(addFriend, "add-friend"), Map.entry(addFriendField, "add-friend-field"), Map.entry(space1, "space"), Map.entry(space2, "space"), Map.entry(programName, "program-name"), Map.entry(close, "close-button"), Map.entry(maximize, "maximize-button"), Map.entry(minimize, "minimize-button"), Map.entry(titleBar, "title-bar"), Map.entry(username, "username"), Map.entry(square, "square"), Map.entry(noImageMassage, "no-image-massage"), Map.entry(currentStatus, "current-status"), Map.entry(profilePicture, "profile-picture"), Map.entry(friendsListHeader, "friends-list-header"), Map.entry(friendsList, "friends-list"), Map.entry(programMassage, "program-massage"), Map.entry(westPane, "west-pane"), Map.entry(northPane, "north-pane"), Map.entry(centerPane, "center-pane"), Map.entry(root, "root")));
         // Setting stage
         primaryStage.setScene(scene);
         primaryStage.setOnCloseRequest(new StoreUsers());
-        primaryStage.setTitle("FaceLite");
+        primaryStage.initStyle(StageStyle.UNDECORATED);
         primaryStage.show();
     }
 
@@ -155,15 +192,19 @@ public class FaceLite extends Application {
             if (friend == null) {
                 programMassage.setText("A profile with the name " + name + " does not exist");
                 return;
-            } else if (profileShown.getFriends().contains(friend)) {
+            }
+            if (profileShown.getFriends().contains(friend)) {
                 programMassage.setText(name + " is already added to your friends list");
                 return;
-            } else if (friend == profileShown) {
+            }
+            if (friend == profileShown) {
                 programMassage.setText("You cannot add yourself as a friend.");
                 return;
             }
             socialNetwork.addFriend(profileShown.getName(), name);
-            friendsList.getChildren().add(new Label(name));
+            Label addedFriend = new Label(friend.getName());
+            addedFriend.getStyleClass().add("friend");
+            friendsList.getChildren().add(addedFriend);
             programMassage.setText(name + " added as a friend");
         }
     }
@@ -198,7 +239,7 @@ public class FaceLite extends Application {
                 String location = "/resources/" + changePictureField.getText();
                 Image image = new Image(location);
                 profilePicture.setImage(image);
-                profileShown.setProfilePicture("/resources/" + changePictureField.getText());
+                profileShown.setProfilePicture("/resources/" + location);
                 profilePicture.setVisible(true);
                 if (stackPane.isVisible())
                     stackPane.setVisible(false);
@@ -261,11 +302,12 @@ public class FaceLite extends Application {
                 return;
             }
             username.setText(name);
-            currentStatus.setText(profile.getCurrentStatus());
+            currentStatus.setText(name + " is " + profile.getCurrentStatus());
             programMassage.setText("Displaying " + name);
             friendsList.getChildren().setAll(friendsListHeader);
             for (Profile friend : profile.getFriends())
                 friendsList.getChildren().add(new Label(friend.getName()));
+            friendsList.getChildren().forEach(node -> node.getStyleClass().add("friend"));
             ImageView userProfilePicture = profile.getProfilePicture();
             if (profileShown == null)
                 setComponentsVisibility(true, "UserInfo");
@@ -273,13 +315,32 @@ public class FaceLite extends Application {
             if (userProfilePicture == null) {
                 stackPane.setVisible(true);
                 profilePicture.setVisible(false);
-            } else {
+            }
+            else {
                 profilePicture.setImage(userProfilePicture.getImage());
                 profilePicture.setVisible(true);
                 stackPane.setVisible(false);
             }
         }
     }
+
+    private class ChangeTheme implements EventHandler<ActionEvent> {
+        @Override
+        public void handle(ActionEvent event) {
+            // handle change theme action
+            if (currentTheme.equals("White")) {
+                currentTheme = "Dark";
+                scene.getStylesheets().remove("/Resources/White-Theme.css");
+                scene.getStylesheets().add("/resources/Dark-Theme.css");
+            }
+            else {
+                currentTheme = "White";
+                scene.getStylesheets().remove("/resources/Dark-Theme.css");
+                scene.getStylesheets().add("/Resources/White-Theme.css");
+            }
+        }
+    }
+
 
     private class StoreUsers implements EventHandler<WindowEvent>  {
         @Override

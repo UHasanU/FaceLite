@@ -1,0 +1,28 @@
+.north-pane, .west-pane, .title-bar, .root {
+    -fx-background-color: #1E1E1E;  /* dark grey */
+}
+
+.center-pane {
+    -fx-background-color: #2D2D2D;
+}
+
+.add, .delete, .lookup, .change-theme, .change-status, .change-status-field, .change-picture, .change-picture-field, .add-friend, .add-friend-field, .name-field {
+    -fx-background-color: #3C3C3C;
+    -fx-text-fill: #FFFFFF;
+}
+
+.name, .program-name, .friend, .program-massage, .no-image-massage, .current-status, .friends-list-header {
+    -fx-text-fill: #FFFFFF;
+}
+
+.square {
+    -fx-fill: black;
+    -fx-stroke: white;
+}
+
+.username {
+    -fx-text-fill: #4DA6FF;
+}
+
+
+
